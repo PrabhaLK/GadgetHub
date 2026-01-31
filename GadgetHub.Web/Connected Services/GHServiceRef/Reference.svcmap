@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="f9a631ce-177a-4529-b26a-7c16ef595a65" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8733/GadgetHubService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="ec5258a3-3264-44b7-8fb2-324d3f5abdc8" SourceId="1" SourceUrl="http://localhost:8733/GadgetHubService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="e2d489a1-e913-430a-9676-7d57eacda320" SourceId="1" SourceUrl="http://localhost:8733/GadgetHubService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="3a9b8154-7f53-4b74-953a-b794f661893d" SourceId="1" SourceUrl="http://localhost:8733/GadgetHubService/mex" />
+    <MetadataFile FileName="GadgetHub.Service.xsd" MetadataType="Schema" ID="aa588460-2eb7-4d94-a2c0-1e4f02ad20e3" SourceId="1" SourceUrl="http://localhost:8733/GadgetHubService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="1e77e889-55e8-4b81-bb8a-bd5008aa65f0" SourceId="1" SourceUrl="http://localhost:8733/GadgetHubService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

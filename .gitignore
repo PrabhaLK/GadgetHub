@@ -1,0 +1,111 @@
+## Ignore Visual Studio user-specific files
+.vs/
+*.user
+*.suo
+
+## Ignore build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+*.log
+
+## Ignore Visual Studio cache files
+*.VC.db
+*.VC.VC.opendb
+*.dbmdl
+
+## Ignore IIS Express config
+.ii*express/
+
+## Ignore Web App temporary ASP.NET files
+**/App_Data/
+**/App_Browsers/
+**/App_Code/
+**/App_GlobalResources/
+**/App_LocalResources/
+**/App_Themes/
+**/App_WebReferences/
+**/App_WebServices/
+**/Temporary ASP.NET Files/
+
+## Ignore packages folder if using NuGet package restore
+packages/
+*.nupkg
+
+## Ignore project lock files and backups
+project.lock.json
+project.fragment.lock.json
+*.bak
+*.backup
+*.orig
+
+## Ignore Rider and JetBrains IDEs
+.idea/
+
+## Ignore user secrets (if used)
+secrets.json
+
+## Ignore Published Web Output
+publish/
+**/wwwroot/
+
+## Ignore Service references generated files
+**/Service References/**/Reference.cs
+**/Service References/**/Reference.svcmap
+**/Service References/**/configuration.svcinfo
+**/Service References/**/configuration91.svcinfo
+**/Service References/**/Connected Services/
+
+## Ignore WCF generated files (if any)
+**/*.svcinfo
+**/*.wsdl
+**/*.xsd
+**/*.disco
+**/*.map
+
+## Ignore Console App Host log/debug files
+*.log
+
+## Ignore database files if using local MDF
+*.mdf
+*.ldf
+
+## Ignore Publish Profiles
+Properties/PublishProfiles/
+
+## Ignore user-specific files and folders for ASP.NET
+*.publish.xml
+*.pubxml
+*.pfx
+*.userosscache
+*.suo
+
+## Ignore ReSharper files
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+## Ignore Code Analysis results
+*.codeanalysislog.xml
+
+## Ignore Rider IDE files
+.idea/
+
+## Ignore Test Results
+TestResults/
+
+## Ignore NCrunch files
+.ncrunch*
+*.ncrunchproject
+
+## Ignore Visual Studio Code files
+.vscode/
+
+## Ignore Backup & Misc
+*.tmp
+*.temp
+*.cache
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
