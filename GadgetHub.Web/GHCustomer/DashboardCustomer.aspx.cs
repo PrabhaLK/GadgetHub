@@ -76,5 +76,11 @@ namespace GadgetHub.Web.GHCustomer
         {
             Response.Redirect("HomePage.aspx");
         }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/Login.aspx");
+        }
     }
 }

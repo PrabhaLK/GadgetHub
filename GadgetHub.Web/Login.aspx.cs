@@ -22,19 +22,21 @@ namespace GadgetHub.Web
 
             if (user != null)
             {
+                var normalizedRole = user.Role?.Trim();
+
                 Session["UserId"] = user.Id;
-                Session["Role"] = user.Role;
+                Session["Role"] = normalizedRole;
                 Session["Email"] = user.Email;
 
                 lblStatus.Text = "Login successful!";
 
                 // Redirect to Home Page
                 //Response.Redirect("GHCustomer/HomePage.aspx");
-                if(user.Role == "admin")
+                if (string.Equals(normalizedRole, "admin", StringComparison.OrdinalIgnoreCase))
                 {
                     Response.Redirect("GHAdmin/DashboardAdmin.aspx");
                 }
-                else if (user.Role == "distributor")
+                else if (string.Equals(normalizedRole, "distributor", StringComparison.OrdinalIgnoreCase))
                 {
                     Response.Redirect("GHDistributor/DashboardDistributor.aspx");
                 }

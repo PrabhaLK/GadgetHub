@@ -222,7 +222,7 @@ namespace GadgetHub.Service
                         int userId = reader.GetInt32(0);
                         string userEmail = reader.GetString(1);
                         string hashedPassword = reader.GetString(2);
-                        string role = reader.GetString(3);
+                        string role = reader.GetString(3)?.Trim();
 
                         if (BCrypt.Net.BCrypt.Verify(password, hashedPassword))
                         {
@@ -596,6 +596,11 @@ namespace GadgetHub.Service
                 // Get quotation items
                 foreach (var quote in quotations)
                 {
+                    if (!quote.QuotationId.HasValue)
+                    {
+                        // Skip placeholder rows when the quotations table is empty
+                        continue;
+                    }
                     string iQuery = @"SELECT qi.ProductId, p.Name, qi.Qty, qi.Price 
                       FROM QuotationItem qi 
                       JOIN Product p ON qi.ProductId = p.Id
@@ -603,7 +608,7 @@ namespace GadgetHub.Service
 
                     using (SqlCommand cmd = new SqlCommand(iQuery, conn))
                     {
-                        cmd.Parameters.AddWithValue("@QuotationId", quote.QuotationId);
+                        cmd.Parameters.AddWithValue("@QuotationId", quote.QuotationId.Value);
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
