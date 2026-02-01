@@ -5,268 +5,376 @@
 <head runat="server">
     <title>My Orders</title>
     <style>
-        /* Reset & base */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f9fc;
             margin: 0;
-            padding: 0;
-            color: #333;
+            padding: 40px 18px 60px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(140% 160% at 10% 20%, #312e81 0%, #0f172a 55%, #050816 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        h2 {
-            color: #2980b9;
-            font-weight: 700;
-            margin-bottom: 25px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(38% 38% at 82% 15%, rgba(236, 72, 153, 0.28), transparent),
+                        radial-gradient(32% 32% at 20% 80%, rgba(56, 189, 248, 0.26), transparent),
+                        radial-gradient(60% 60% at 110% -10%, rgba(129, 140, 248, 0.25), transparent);
+            filter: blur(70px);
+            pointer-events: none;
         }
 
-        /* Main gridview styling */
-        .orders-grid {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgb(41 128 185 / 0.15);
-            font-size: 14px;
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(140deg, rgba(2, 132, 199, 0.18), transparent 45%, rgba(168, 85, 247, 0.12) 70%, transparent);
+            pointer-events: none;
         }
 
-        /* Header styles */
-        .orders-grid thead th,
-        .grid-header {
-            background-color: #2980b9 !important;
-            color: white !important;
-            font-weight: 600;
-            border-bottom: 3px solid #1c5980;
-            padding: 12px 15px;
-            text-align: left;
-            user-select: none;
+        form {
+            display: flex;
+            justify-content: center;
         }
 
-        .orders-grid thead th:first-child {
-            border-top-left-radius: 8px;
+        .page-shell {
+            width: min(1100px, 96%);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            position: relative;
+            z-index: 1;
         }
 
-        .orders-grid thead th:last-child {
-            border-top-right-radius: 8px;
-        }
-
-        /* Row styles */
-        .orders-grid tbody tr {
-            transition: background-color 0.3s ease;
-            cursor: default;
-        }
-        .orders-grid tbody tr:nth-child(even) {
-            background-color: #f9faff;
-        }
-        .orders-grid tbody tr:hover {
-            background-color: #d6e6fb;
-        }
-
-        /* Cells */
-        .orders-grid tbody td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e1e8f0;
-            vertical-align: middle;
-        }
-
-        /* Order items table inside placeholder */
-        .order-items {
-            margin-top: 10px;
-            font-size: 0.9em;
-            border-collapse: collapse;
-            width: 100%;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
-        }
-        .order-items th, .order-items td {
-            border: 1px solid #ccc;
-            padding: 6px 10px;
-            text-align: left;
-        }
-        .order-items th {
-            background-color: #2980b9;
-            color: white;
-            font-weight: 600;
-        }
-
-
-        /* Header */
         header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            background-color: #2980b9;
-            color: white;
-            box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 26px 32px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(76, 29, 149, 0.72), rgba(34, 211, 238, 0.55));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(18px);
         }
 
         #companyName {
             font-weight: 700;
-            font-size: 1.8em;
-            letter-spacing: 1px;
-            user-select: none;
+            font-size: 1.8rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #f8fafc;
         }
 
-        /* Cart area */
-        #cartArea {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        /* Buttons in cart area */
-        .button-link {
-            background-color: #e67e22;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 6px;
+        .pill-button {
             border: none;
+            border-radius: 999px;
+            padding: 12px 26px;
             font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .button-link:hover {
-            background-color: #d35400;
+            background: rgba(148, 163, 184, 0.12);
+            color: rgba(226, 232, 240, 0.85);
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            transition: transform 0.2s ease, box-shadow 0.3s ease, border 0.3s ease;
         }
 
-        /* Layout */
-        .layout {
-            display: flex;
-            min-height: calc(100vh - 72px); /* header height approx */
-            background-color: #f7f9fc;
+        .pill-button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(226, 232, 240, 0.55);
+            box-shadow: 0 18px 28px rgba(15, 23, 42, 0.45);
         }
 
-        nav {
-            width: 240px;
-            background: white;
-            padding: 25px 20px;
-            border-right: 1px solid #d6dbe5;
-            box-shadow: 2px 0 6px rgb(0 0 0 / 0.05);
-            border-radius: 0 8px 8px 0;
-        }
-        nav h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #2980b9;
+        h2 {
+            margin: 0;
+            font-size: 1.8rem;
             font-weight: 700;
-            user-select: none;
-        }
-        nav div {
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-        nav input[type="checkbox"] {
-            margin-right: 8px;
-            transform: scale(1.1);
-            cursor: pointer;
-        }
-        nav button {
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            background-color: #2980b9;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        nav button:hover {
-            background-color: #3a7bd5;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: center;
+            color: #e0f2fe;
         }
 
-        main {
-            flex-grow: 1;
-            padding: 30px 40px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-            overflow-y: auto;
+        .orders-panel {
+            padding: 36px 40px;
+            border-radius: 32px;
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 32px 65px rgba(5, 8, 22, 0.55);
+            backdrop-filter: blur(20px);
         }
-}
-        /* Responsive */
-        @media (max-width: 700px) {
-            .orders-grid, .orders-grid thead, .orders-grid tbody, .orders-grid th, .orders-grid td, .orders-grid tr {
-                display: block;
+
+        .orders-list {
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+        }
+
+        .order-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+            gap: 28px;
+            padding: 28px 30px;
+            border-radius: 28px;
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.82), rgba(49, 46, 129, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 32px 48px rgba(14, 116, 144, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(236, 72, 153, 0.36);
+            box-shadow: 0 40px 62px rgba(236, 72, 153, 0.25);
+        }
+
+        .order-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .order-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .order-id {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #e0f2fe;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+        }
+
+        .meta-item.span-2 {
+            grid-column: span 2;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(148, 163, 184, 0.75);
+            font-weight: 600;
+        }
+
+        .meta-value {
+            font-size: 0.98rem;
+            color: rgba(226, 232, 240, 0.88);
+            font-weight: 600;
+        }
+
+        .meta-value.total {
+            color: #f472b6;
+            font-size: 1.05rem;
+        }
+
+        .meta-value.date {
+            color: rgba(148, 163, 184, 0.9);
+        }
+
+        .order-items-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: rgba(15, 23, 42, 0.65);
+            border-radius: 22px;
+            padding: 20px 22px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .items-title {
+            font-size: 0.85rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(148, 163, 184, 0.75);
+            font-weight: 700;
+        }
+
+        .order-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .order-items-table th,
+        .order-items-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .order-items-table th {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .order-items-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .status-pill.status-pending {
+            background: rgba(250, 204, 21, 0.18);
+            color: #facc15;
+        }
+
+        .status-pill.status-completed {
+            background: rgba(34, 197, 94, 0.18);
+            color: #4ade80;
+        }
+
+        .status-pill.status-cancelled {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        .empty-state {
+            display: none;
+            margin-top: 32px;
+            padding: 60px 30px;
+            border-radius: 28px;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            color: rgba(226, 232, 240, 0.78);
+            font-size: 1.05rem;
+            box-shadow: 0 28px 45px rgba(8, 47, 73, 0.35);
+        }
+
+        .empty-state.show {
+            display: block;
+        }
+
+        @media (max-width: 980px) {
+            .order-card {
+                grid-template-columns: 1fr;
             }
-            .orders-grid thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
+        }
+
+        @media (max-width: 720px) {
+            .orders-panel {
+                padding: 28px 24px;
             }
-            .orders-grid tbody tr {
-                margin-bottom: 20px;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgb(41 128 185 / 0.15);
-                padding: 15px;
+
+            .order-card {
+                padding: 24px;
             }
-            .orders-grid tbody td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-                text-align: right;
-                font-size: 13px;
-            }
-            .orders-grid tbody td::before {
-                position: absolute;
-                left: 15px;
-                top: 12px;
-                width: 45%;
-                white-space: nowrap;
-                font-weight: 600;
-                text-transform: uppercase;
-                font-size: 12px;
-                color: #2980b9;
-                content: attr(data-label);
-                text-align: left;
+
+            .meta-item.span-2 {
+                grid-column: span 1;
             }
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <header>
-            <div id="companyName" style="font-weight:bold; font-size:1.5em;">Gadget Hub</div>
-
-            <div id="cartArea">
-                <asp:Button ID="btnHome" runat="server" Text="Back to Store" OnClick="btnHome_Click" CssClass="button-link" />
+        <div class="page-shell">
+            <header>
+                <div id="companyName">Gadget Hub</div>
+                <asp:Button ID="btnHome" runat="server" Text="Back to Store" OnClick="btnHome_Click" CssClass="pill-button" />
+            </header>
+            <div class="orders-panel">
+                <h2>My Orders</h2>
+                <div class="orders-list">
+                    <asp:Repeater ID="rptOrders" runat="server">
+                        <ItemTemplate>
+                            <div class="order-card">
+                                <div class="order-meta">
+                                    <div class="order-head">
+                                        <span class="order-id">Order #<%# Eval("Id") %></span>
+                                        <asp:Literal ID="litStatus" runat="server"></asp:Literal>
+                                    </div>
+                                    <div class="meta-grid">
+                                        <div class="meta-item">
+                                            <span class="meta-label">Total</span>
+                                            <span class="meta-value total"><asp:Literal ID="litTotal" runat="server"></asp:Literal></span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">Order Date</span>
+                                            <span class="meta-value date"><asp:Literal ID="litDate" runat="server"></asp:Literal></span>
+                                        </div>
+                                        <div class="meta-item span-2">
+                                            <span class="meta-label">Delivery Address</span>
+                                            <span class="meta-value"><%# Eval("DeliveryAddress") %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="order-items-wrapper">
+                                    <div class="items-title">Items</div>
+                                    <asp:Repeater ID="rptOrderItems" runat="server">
+                                        <HeaderTemplate>
+                                            <table class="order-items-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th>Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                                    <tr>
+                                                        <td><%# Eval("ProductName") %></td>
+                                                        <td><%# Eval("Qty") %></td>
+                                                    </tr>
+                                        </ItemTemplate>
+                                        <FooterTemplate>
+                                                </tbody>
+                                            </table>
+                                        </FooterTemplate>
+                                    </asp:Repeater>
+                                    <asp:Literal ID="litEmptyItems" runat="server" Visible="false"></asp:Literal>
+                                </div>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                    <asp:Panel ID="pnlEmptyOrders" runat="server" CssClass="empty-state">
+                        You have no orders yet. Head back to the store to discover something new.
+                    </asp:Panel>
+                </div>
             </div>
-        </header>
-        <h2>My Orders</h2>
-        <asp:GridView 
-            ID="gvOrders" 
-            runat="server" 
-            AutoGenerateColumns="false" 
-            EmptyDataText="No orders found" 
-            CssClass="orders-grid"
-            OnRowDataBound="gvOrders_RowDataBound">
-            <Columns>
-                <asp:BoundField DataField="Id" HeaderText="Order ID" />
-                <asp:BoundField DataField="Total" HeaderText="Total" DataFormatString="{0:C}" />
-                <asp:BoundField DataField="DeliveryAddress" HeaderText="Delivery Address" />
-                <asp:BoundField DataField="Status" HeaderText="Status" />
-                <asp:BoundField DataField="CreatedAt" HeaderText="Order Date" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
-                <asp:TemplateField HeaderText="Items">
-                    <ItemTemplate>
-                        <asp:PlaceHolder ID="phOrderItems" runat="server"></asp:PlaceHolder>
-                    </ItemTemplate>
-                </asp:TemplateField>
-            </Columns>
-        </asp:GridView>
+        </div>
     </form>
 </body>
 </html>

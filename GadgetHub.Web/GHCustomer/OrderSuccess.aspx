@@ -6,63 +6,106 @@
     <title>Order Placed Successfully</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f9fc;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 40px 18px 60px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(140% 160% at 10% 20%, #312e81 0%, #0f172a 55%, #050816 100%);
+            color: #e2e8f0;
             min-height: 100vh;
-            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(38% 38% at 82% 15%, rgba(236, 72, 153, 0.28), transparent),
+                        radial-gradient(32% 32% at 20% 80%, rgba(56, 189, 248, 0.26), transparent),
+                        radial-gradient(60% 60% at 110% -10%, rgba(129, 140, 248, 0.25), transparent);
+            filter: blur(70px);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(140deg, rgba(2, 132, 199, 0.18), transparent 45%, rgba(168, 85, 247, 0.12) 70%, transparent);
+            pointer-events: none;
         }
 
         .container {
-            background: white;
-            padding: 40px 50px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(41, 128, 185, 0.15);
+            position: relative;
+            z-index: 1;
+            padding: 56px 60px;
+            border-radius: 36px;
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 36px 70px rgba(5, 8, 22, 0.55);
+            backdrop-filter: blur(22px);
             text-align: center;
-            max-width: 450px;
-            width: 90%;
+            max-width: 540px;
+            width: min(540px, 96%);
+        }
+
+        .success-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #22d3ee, #6366f1);
+            margin-bottom: 24px;
+            color: #020617;
+            font-size: 2rem;
+            box-shadow: 0 18px 32px rgba(99, 102, 241, 0.35);
         }
 
         h2 {
-            color: #2980b9;
-            margin-bottom: 20px;
+            margin: 0 0 18px;
+            font-size: 2rem;
             font-weight: 700;
-            font-size: 1.8em;
-            user-select: none;
+            color: #e0f2fe;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         p {
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            color: #555;
-            user-select: none;
+            margin: 0 0 32px;
+            font-size: 1.05rem;
+            color: rgba(226, 232, 240, 0.78);
+            line-height: 1.6;
         }
 
         a {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #2980b9;
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 34px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #f472b6, #38bdf8);
+            color: #061122;
+            font-weight: 700;
             text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
         }
 
         a:hover {
-            background-color: #3a7bd5;
+            transform: translateY(-1px);
+            box-shadow: 0 18px 34px rgba(244, 114, 182, 0.35);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Your order has been placed successfully!</h2>
-        <p>Please await confirmation from distributor. Thank you for shopping with us!</p>
+        <div class="success-icon">✓</div>
+        <h2>Order Confirmed</h2>
+        <p>Please await confirmation from the distributor. Thank you for choosing Gadget Hub!</p>
         <a href="HomePage.aspx">Continue Shopping</a>
     </div>
 </body>

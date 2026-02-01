@@ -5,263 +5,364 @@
 <head runat="server">
     <title>Gadget Hub - Home</title>
     <style>
-        /* Reset & base */
+        /* Futuristic gradient backdrop */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f9fc;
             margin: 0;
-            padding: 0;
-            color: #333;
+            padding: 40px 18px 60px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(140% 160% at 10% 20%, #312e81 0%, #0f172a 55%, #050816 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Header */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(38% 38% at 80% 18%, rgba(236, 72, 153, 0.28), transparent),
+                        radial-gradient(32% 32% at 18% 78%, rgba(56, 189, 248, 0.26), transparent),
+                        radial-gradient(60% 60% at 110% -10%, rgba(129, 140, 248, 0.25), transparent);
+            filter: blur(70px);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(140deg, rgba(2, 132, 199, 0.18), transparent 45%, rgba(168, 85, 247, 0.12) 70%, transparent);
+            pointer-events: none;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+        }
+
+        .page-shell {
+            width: min(1240px, 96%);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            position: relative;
+            z-index: 1;
+            margin: 0 auto;
+        }
+
         header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            background-color: #2980b9;
-            color: white;
-            box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            gap: 24px;
+            padding: 26px 32px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(76, 29, 149, 0.72), rgba(34, 211, 238, 0.55));
+            border-radius: 26px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(18px);
         }
 
         #companyName {
             font-weight: 700;
-            font-size: 1.8em;
-            letter-spacing: 1px;
-            user-select: none;
+            font-size: 1.9rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #f8fafc;
         }
 
-        /* Search bar */
+        /* Search */
         #searchBar {
-            flex-grow: 1;
-            max-width: 400px;
-            margin: 0 20px;
+            flex: 1;
             display: flex;
-            gap: 8px;
+            align-items: center;
+            gap: 14px;
+            padding: 8px 10px 8px 22px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(15, 23, 42, 0.6);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
         }
+
         #searchBar input[type="text"] {
-            flex-grow: 1;
-            padding: 8px 12px;
-            border-radius: 6px;
+            flex: 1;
+            padding: 10px 0;
+            background: transparent;
             border: none;
-            font-size: 14px;
+            color: #e2e8f0;
+            font-size: 15px;
             outline: none;
         }
-        #searchBar input[type="text"]::placeholder {
-            color: #a5c1e0;
-        }
-        #searchBar input[type="submit"],
-        #searchBar button, 
-        #searchBar asp\\:Button {
-            background-color: #1f5fa7;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-        #searchBar input[type="submit"]:hover,
-        #searchBar button:hover,
-        #searchBar asp\\:Button:hover {
-            background-color: #3a7bd5;
+
+        #searchBar input::placeholder {
+            color: rgba(226, 232, 240, 0.55);
         }
 
-        /* Cart area */
+        .search-button {
+            background: linear-gradient(135deg, #6366f1, #22d3ee);
+            color: #0b1120;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 24px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 32px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Cart + actions */
         #cartArea {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 14px;
         }
+
         .cart-icon {
             position: relative;
-            font-size: 1.5em;
+            font-size: 1.6rem;
             cursor: pointer;
-            user-select: none;
-            transition: color 0.3s ease;
+            color: #e0f2fe;
+            filter: drop-shadow(0 10px 18px rgba(15, 118, 110, 0.35));
+            transition: transform 0.2s ease;
         }
+
         .cart-icon:hover {
-            color: #d1e7ff;
+            transform: translateY(-2px) scale(1.03);
         }
+
         .cart-count {
             position: absolute;
-            top: -8px;
-            right: -10px;
-            background: #e74c3c;
-            color: white;
-            border-radius: 50%;
+            top: -10px;
+            right: -12px;
+            min-width: 22px;
             padding: 3px 7px;
+            background: linear-gradient(135deg, #f97316, #f43f5e);
+            color: #0f172a;
+            border-radius: 999px;
             font-size: 12px;
             font-weight: 700;
-            box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 18px rgba(244, 63, 94, 0.35);
         }
 
-        /* Buttons in cart area */
-        .button-link {
-            background-color: #e67e22;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 6px;
-            border: none;
+        .pill-button {
+            background: rgba(148, 163, 184, 0.15);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            border-radius: 999px;
+            padding: 10px 22px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .button-link:hover {
-            background-color: #d35400;
-        }
-        .button-link.logout {
-            background-color: #475569;
-        }
-        .button-link.logout:hover {
-            background-color: #334155;
+            transition: transform 0.2s ease, box-shadow 0.3s ease, border 0.3s ease;
         }
 
-        /* Layout */
+        .pill-button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(226, 232, 240, 0.55);
+            box-shadow: 0 18px 28px rgba(15, 23, 42, 0.45);
+        }
+
+        .pill-button.accent {
+            background: linear-gradient(135deg, #38bdf8, #6366f1);
+            border: none;
+            color: #020617;
+        }
+
+        .pill-button.ghost {
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .pill-button.danger {
+            background: rgba(244, 63, 94, 0.18);
+            border: 1px solid rgba(244, 63, 94, 0.45);
+        }
+
+        /* Content layout */
         .layout {
-            display: flex;
-            min-height: calc(100vh - 72px); /* header height approx */
-            background-color: #f7f9fc;
-        }
-
-        nav {
-            width: 240px;
-            background: white;
-            padding: 25px 20px;
-            border-right: 1px solid #d6dbe5;
-            box-shadow: 2px 0 6px rgb(0 0 0 / 0.05);
-            border-radius: 0 8px 8px 0;
-        }
-        nav h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #2980b9;
-            font-weight: 700;
-            user-select: none;
-        }
-        nav div {
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-        nav input[type="checkbox"] {
-            margin-right: 8px;
-            transform: scale(1.1);
-            cursor: pointer;
-        }
-        nav button {
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            background-color: #2980b9;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        nav button:hover {
-            background-color: #3a7bd5;
-        }
-
-        main {
-            flex-grow: 1;
-            padding: 30px 40px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-            overflow-y: auto;
+            grid-template-columns: 260px 1fr;
+            gap: 28px;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 28px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 32px 65px rgba(5, 8, 22, 0.55);
+        }
+
+        nav.glass-panel {
+            padding: 28px 26px;
+        }
+
+        nav h3 {
+            margin: 0 0 22px;
+            color: #bae6fd;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        nav div {
+            margin-bottom: 14px;
+            font-size: 14px;
+            color: rgba(226, 232, 240, 0.85);
+        }
+
+        nav input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.15);
+            accent-color: #38bdf8;
+            cursor: pointer;
+        }
+
+        .filter-apply {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px 0;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #22d3ee, #6366f1);
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .filter-apply:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px rgba(34, 211, 238, 0.35);
+        }
+
+        main.product-grid {
+            padding: 16px 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 24px;
         }
 
         .product-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgb(41 128 185 / 0.15);
-            padding: 15px;
+            position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            gap: 14px;
+            padding: 22px;
+            border-radius: 24px;
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.78), rgba(49, 46, 129, 0.78));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 30px 48px rgba(14, 116, 144, 0.38);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
+
         .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgb(41 128 185 / 0.3);
+            transform: translateY(-6px);
+            border-color: rgba(236, 72, 153, 0.45);
+            box-shadow: 0 40px 62px rgba(236, 72, 153, 0.35);
         }
+
         .product-card img {
             width: 100%;
-            height: 150px;
+            height: 160px;
             object-fit: contain;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            user-select: none;
+            border-radius: 18px;
+            background: radial-gradient(circle at 50% 28%, rgba(34, 211, 238, 0.25), transparent 55%),
+                        radial-gradient(circle at 70% 75%, rgba(236, 72, 153, 0.22), transparent 70%);
         }
+
         .product-card h4 {
-            margin: 0 0 10px 0;
-            color: #2980b9;
-            font-weight: 700;
-            font-size: 1.1em;
-            user-select: none;
+            margin: 0;
             text-align: center;
-            min-height: 2.4em;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e0f2fe;
+            min-height: 2.6em;
             display: flex;
             align-items: center;
             justify-content: center;
-            line-height: 1.2;
-        }
-        .product-card p {
-            margin: 0 0 15px 0;
-            font-weight: 600;
-            color: #555;
-            user-select: none;
         }
 
-        /* Add to cart button inside product card */
-        .product-card asp\\:Button, .product-card button {
-            background-color: #2980b9;
-            border: none;
-            color: white;
-            padding: 8px 0;
-            border-radius: 6px;
+        .product-card p {
+            margin: 0;
+            text-align: center;
             font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
+            color: rgba(226, 232, 240, 0.8);
         }
-        .product-card asp\\:Button:hover, .product-card button:hover {
-            background-color: #3a7bd5;
+
+        .cta-button {
+            margin-top: auto;
+            width: 100%;
+            border: none;
+            border-radius: 999px;
+            padding: 11px 0;
+            background: linear-gradient(135deg, #f472b6, #38bdf8);
+            color: #061122;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 34px rgba(244, 114, 182, 0.35);
+        }
+
+        @media (max-width: 1080px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #searchBar {
+                width: 100%;
+            }
+
+            #cartArea {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            nav.glass-panel {
+                order: 2;
+            }
+
+            main.product-grid {
+                order: 1;
+            }
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <header>
-            <div id="companyName" style="font-weight:bold; font-size:1.5em;">Gadget Hub</div>
+        <div class="page-shell">
+            <header>
+                <div id="companyName">Gadget Hub</div>
 
-            <div id="searchBar">
-                <asp:TextBox ID="txtSearch" runat="server" placeholder="Search products..." />
-                <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" />
-            </div>
-
-            <div id="cartArea">
-                <div class="cart-icon" onclick="location.href='CartPage.aspx'">
-                    🛒
-                    <span id="cartCount" class="cart-count"><%= CartCount %></span>
+                <div id="searchBar">
+                    <asp:TextBox ID="txtSearch" runat="server" placeholder="Search products..." />
+                    <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" CssClass="search-button" />
                 </div>
-                <asp:Button ID="btnCheckout" runat="server" Text="Checkout" OnClick="btnCheckout_Click" CssClass="button-link" />
-                <asp:Button ID="btnDashboard" runat="server" Text="Dashboard" OnClick="btnDashboard_Click" CssClass="button-link" />
-                <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="button-link logout" OnClick="btnLogout_Click" />
-            </div>
-        </header>
-        <div class="layout">
-            <nav>
+
+                <div id="cartArea">
+                    <div class="cart-icon" onclick="location.href='CartPage.aspx'">
+                        🛒
+                        <span id="cartCount" class="cart-count"><%= CartCount %></span>
+                    </div>
+                    <asp:Button ID="btnCheckout" runat="server" Text="Checkout" OnClick="btnCheckout_Click" CssClass="pill-button accent" />
+                    <asp:Button ID="btnDashboard" runat="server" Text="Dashboard" OnClick="btnDashboard_Click" CssClass="pill-button ghost" />
+                    <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="pill-button danger" OnClick="btnLogout_Click" />
+                </div>
+            </header>
+            <div class="layout">
+                <nav class="glass-panel">
                 <h3>Filter by Category</h3>
                 <asp:Repeater ID="rptCategories" runat="server">
                     <ItemTemplate>
@@ -271,23 +372,24 @@
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>
-                <asp:Button ID="btnFilter" runat="server" Text="Apply Filter" OnClick="btnFilter_Click" />
-            </nav>
+                    <asp:Button ID="btnFilter" runat="server" Text="Apply Filter" OnClick="btnFilter_Click" CssClass="filter-apply" />
+                </nav>
 
-            <main>
-                <asp:Repeater ID="rptProducts" runat="server">
-                    <ItemTemplate>
-                        <div class="product-card">
-                            <a href='<%# "ProductDetails.aspx?id=" + Eval("Id") %>' style="text-decoration:none; color:inherit;">
-                                <img src='<%# ResolveUrl("~/Images/" + Eval("Image")) %>' alt='<%# Eval("Name") %>' style="width:100%; height:150px; object-fit:contain;" />
-                                <h4><%# Eval("Name") %></h4>
-                                <p>Price: LKR <%# Eval("Price") %></p>
-                            </a>
-                            <asp:Button ID="btnAddToCart" runat="server" CommandArgument='<%# Eval("Id") %>' Text="Add to Cart" OnClick="btnAddToCart_Click" />
-                        </div>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </main>
+                <main class="product-grid glass-panel">
+                    <asp:Repeater ID="rptProducts" runat="server">
+                        <ItemTemplate>
+                            <div class="product-card">
+                                <a href='<%# "ProductDetails.aspx?id=" + Eval("Id") %>' style="text-decoration:none; color:inherit;">
+                                    <img src='<%# ResolveUrl("~/Images/" + Eval("Image")) %>' alt='<%# Eval("Name") %>' />
+                                    <h4><%# Eval("Name") %></h4>
+                                    <p>Price: LKR <%# Eval("Price") %></p>
+                                </a>
+                                <asp:Button ID="btnAddToCart" runat="server" CommandArgument='<%# Eval("Id") %>' Text="Add to Cart" OnClick="btnAddToCart_Click" CssClass="cta-button" />
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </main>
+            </div>
         </div>
     </form>
 </body>
