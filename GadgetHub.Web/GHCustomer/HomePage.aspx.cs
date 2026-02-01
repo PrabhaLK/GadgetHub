@@ -13,6 +13,12 @@ namespace GadgetHub.Web
         public int CartCount = 0;  // For displaying cart count in header
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsUserAuthorized())
+            {
+                Response.Redirect("~/Login.aspx");
+                return;
+            }
+
             serviceClient = new GadgetHubServiceClient();
 
             if (!IsPostBack)
@@ -111,6 +117,20 @@ namespace GadgetHub.Web
         protected void btnDashboard_Click(object sender, EventArgs e)
         {
             Response.Redirect("DashboardCustomer.aspx");
+        }
+
+        protected void btnLogout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();
+            Response.Redirect("~/Login.aspx");
+        }
+
+        private bool IsUserAuthorized()
+        {
+            var userId = Session["UserId"];
+            var role = Session["Role"] as string;
+
+            return userId != null && string.Equals(role, "customer", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

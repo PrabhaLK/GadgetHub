@@ -117,6 +117,12 @@
         .button-link:hover {
             background-color: #d35400;
         }
+        .button-link.logout {
+            background-color: #475569;
+        }
+        .button-link.logout:hover {
+            background-color: #334155;
+        }
 
         /* Layout */
         .layout {
@@ -203,6 +209,12 @@
             font-weight: 700;
             font-size: 1.1em;
             user-select: none;
+            text-align: center;
+            min-height: 2.4em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
         }
         .product-card p {
             margin: 0 0 15px 0;
@@ -245,6 +257,7 @@
                 </div>
                 <asp:Button ID="btnCheckout" runat="server" Text="Checkout" OnClick="btnCheckout_Click" CssClass="button-link" />
                 <asp:Button ID="btnDashboard" runat="server" Text="Dashboard" OnClick="btnDashboard_Click" CssClass="button-link" />
+                <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="button-link logout" OnClick="btnLogout_Click" />
             </div>
         </header>
         <div class="layout">
@@ -267,6 +280,7 @@
                         <div class="product-card">
                             <a href='<%# "ProductDetails.aspx?id=" + Eval("Id") %>' style="text-decoration:none; color:inherit;">
                                 <img src='<%# ResolveUrl("~/Images/" + Eval("Image")) %>' alt='<%# Eval("Name") %>' style="width:100%; height:150px; object-fit:contain;" />
+                                <h4><%# Eval("Name") %></h4>
                                 <p>Price: LKR <%# Eval("Price") %></p>
                             </a>
                             <asp:Button ID="btnAddToCart" runat="server" CommandArgument='<%# Eval("Id") %>' Text="Add to Cart" OnClick="btnAddToCart_Click" />
