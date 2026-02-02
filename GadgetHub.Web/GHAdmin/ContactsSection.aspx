@@ -4,101 +4,335 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Contact Messages</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
+    <style>
+        body {
+            margin: 0;
+            padding: 32px 18px 48px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(140% 160% at 10% 20%, #312e81 0%, #0f172a 55%, #050816 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 
-    div {
-        margin-bottom: 10px;
-    }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(38% 38% at 82% 15%, rgba(236, 72, 153, 0.28), transparent),
+                        radial-gradient(32% 32% at 20% 80%, rgba(56, 189, 248, 0.26), transparent),
+                        radial-gradient(60% 60% at 110% -10%, rgba(129, 140, 248, 0.25), transparent);
+            filter: blur(70px);
+            pointer-events: none;
+        }
 
-    input[type="text"], input[type="search"], textarea {
-        padding: 6px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 250px;
-        box-sizing: border-box;
-    }
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(140deg, rgba(2, 132, 199, 0.18), transparent 45%, rgba(168, 85, 247, 0.12) 70%, transparent);
+            pointer-events: none;
+        }
 
-    input[type="button"], input[type="submit"], button, asp\:Button {
-        background-color: #2980b9;
-        border: none;
-        color: white;
-        padding: 7px 14px;
-        text-align: center;
-        text-decoration: none;
-        font-size: 14px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+        form {
+            display: flex;
+            justify-content: center;
+        }
 
-    input[type="button"]:hover, input[type="submit"]:hover, button:hover, asp\:Button:hover {
-        background-color: #3498db;
-    }
+        .page-shell {
+            width: min(1180px, 96%);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
 
-    asp\:GridView, table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 15px;
-    }
+        .panel {
+            padding: 32px 34px;
+            border-radius: 30px;
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 32px 60px rgba(5, 8, 22, 0.55);
+            backdrop-filter: blur(20px);
+        }
 
-    asp\:GridView th, asp\:GridView td, table th, table td {
-        border: 1px solid #ccc;
-        padding: 10px 12px;
-        text-align: left;
-        vertical-align: middle;
-    }
+        .panel h1 {
+            margin: 0;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #e0f2fe;
+        }
 
-    asp\:GridView th, table th {
-        background-color: #2980b9;
-        color: white;
-        font-weight: normal;
-    }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 28px;
+            align-items: center;
+        }
 
-    asp\:GridView tr:nth-child(even), table tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+        .control {
+            padding: 10px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            background: rgba(15, 23, 42, 0.55);
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+            min-width: 220px;
+        }
 
-    asp\:GridView tr:hover, table tr:hover {
-        background-color: #f1f1f1;
-    }
+        .control:focus {
+            outline: none;
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22);
+        }
 
-    asp\:GridView .emptydatatext {
-        font-style: italic;
-        color: #666;
-        padding: 10px;
-    }
-</style>
+        .control::placeholder {
+            color: rgba(226, 232, 240, 0.58);
+        }
+
+        .primary-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 11px 26px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #38bdf8, #6366f1);
+            color: #061122;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 32px rgba(99, 102, 241, 0.35);
+        }
+
+        .table-shell {
+            position: relative;
+            margin-top: 26px;
+            padding: 22px 24px;
+            border-radius: 28px;
+            background: linear-gradient(140deg, rgba(15, 23, 42, 0.92), rgba(17, 24, 39, 0.72));
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.18), 0 28px 45px rgba(6, 12, 34, 0.55);
+            overflow: hidden;
+        }
+
+        .table-shell::before {
+            content: "";
+            position: absolute;
+            inset: -40% -30% auto;
+            height: 70%;
+            background: radial-gradient(55% 55% at 20% 35%, rgba(56, 189, 248, 0.18), transparent 60%),
+                        radial-gradient(40% 40% at 80% 15%, rgba(236, 72, 153, 0.16), transparent 60%);
+            z-index: 0;
+        }
+
+        .table-shell::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            border: 1px solid rgba(99, 102, 241, 0.18);
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .table-scroll {
+            position: relative;
+            z-index: 1;
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+
+        .table-scroll::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.65);
+            border-radius: 999px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.55), rgba(129, 140, 248, 0.65));
+            border-radius: 999px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.75), rgba(129, 140, 248, 0.85));
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: 24px;
+            background: rgba(5, 12, 30, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 18px 35px rgba(8, 47, 73, 0.32);
+            min-width: 920px;
+        }
+
+        .data-table thead th {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.32), rgba(129, 140, 248, 0.38));
+            color: #f8fafc;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+        }
+
+        .data-table tbody td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            color: rgba(226, 232, 240, 0.92);
+            vertical-align: top;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr {
+            transition: background 0.25s ease, transform 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(236, 72, 153, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: rgba(15, 23, 42, 0.76);
+        }
+
+        .data-table tbody tr:nth-child(odd) {
+            background: rgba(12, 21, 38, 0.86);
+        }
+
+        .data-table tbody td + td {
+            border-left: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .message-cell {
+            max-width: 340px;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+
+        .empty-state {
+            padding: 28px;
+            text-align: center;
+            font-size: 1.05rem;
+            color: rgba(226, 232, 240, 0.65);
+        }
+
+        @media (max-width: 720px) {
+            .panel {
+                padding: 26px 22px;
+            }
+
+            .table-shell {
+                padding: 18px 18px;
+            }
+
+            .table-scroll {
+                overflow-x: visible;
+                border-radius: 24px;
+            }
+
+            .data-table thead {
+                display: none;
+            }
+
+            .data-table,
+            .data-table tbody,
+            .data-table tr,
+            .data-table td {
+                display: block;
+            }
+
+            .data-table tr {
+                margin-bottom: 16px;
+                border: 1px solid rgba(148, 163, 184, 0.18);
+                border-radius: 24px;
+                overflow: hidden;
+            }
+
+            .data-table tbody td {
+                padding: 12px 16px;
+                position: relative;
+                border-bottom: none;
+            }
+
+            .data-table tbody td + td {
+                border-left: none;
+            }
+
+            .data-table tbody td::before {
+                display: block;
+                font-size: 0.75rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: rgba(148, 163, 184, 0.75);
+                margin-bottom: 6px;
+            }
+
+            .data-table tbody td:nth-child(1)::before { content: "ID"; }
+            .data-table tbody td:nth-child(2)::before { content: "Timestamp"; }
+            .data-table tbody td:nth-child(3)::before { content: "User"; }
+            .data-table tbody td:nth-child(4)::before { content: "Subject"; }
+            .data-table tbody td:nth-child(5)::before { content: "Message"; }
+        }
+    </style>
 
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            Search by user or subject:
-            <asp:TextBox ID="txtSearch" runat="server" placeholder="User or subject"></asp:TextBox>
-            <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" />
+        <div class="page-shell">
+            <div class="panel">
+                <h1>Contact Messages</h1>
+                <div class="filters">
+                    <asp:TextBox ID="txtSearch" runat="server" CssClass="control" placeholder="Search by user, subject, or message"></asp:TextBox>
+                    <asp:Button ID="btnSearch" runat="server" Text="Search" CssClass="primary-btn" OnClick="btnSearch_Click" />
+                </div>
+
+                <div class="table-shell">
+                    <div class="table-scroll">
+                        <asp:GridView ID="gvMessages" runat="server" AutoGenerateColumns="false" CssClass="data-table" EmptyDataText="No messages found" UseAccessibleHeader="true" GridLines="None">
+                            <Columns>
+                                <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-CssClass="highlight" />
+                                <asp:BoundField DataField="Timestamp" HeaderText="Timestamp" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
+                                <asp:BoundField DataField="UserName" HeaderText="User" />
+                                <asp:BoundField DataField="Subject" HeaderText="Subject" />
+                                <asp:TemplateField HeaderText="Message">
+                                    <ItemTemplate>
+                                        <span class="message-cell"><%# Eval("Message") %></span>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                            <EmptyDataTemplate>
+                                <div class="empty-state">No messages found.</div>
+                            </EmptyDataTemplate>
+                        </asp:GridView>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <br />
-
-        <asp:GridView ID="gvMessages" runat="server" AutoGenerateColumns="false" EmptyDataText="No messages found">
-            <Columns>
-                <asp:BoundField DataField="Id" HeaderText="ID" />
-                <asp:BoundField DataField="Timestamp" HeaderText="Timestamp" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
-                <asp:BoundField DataField="UserName" HeaderText="User" />
-                <asp:BoundField DataField="Subject" HeaderText="Subject" />
-                <asp:TemplateField HeaderText="Message">
-                    <ItemTemplate>
-                        <asp:Label ID="lblMessage" runat="server" Text='<%# Eval("Message") %>' 
-                            ToolTip='<%# Eval("Message") %>'></asp:Label>
-                    </ItemTemplate>
-                </asp:TemplateField>
-            </Columns>
-        </asp:GridView>
     </form>
 </body>
 </html>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.UI;
 
 namespace GadgetHub.Web.GHDistributor
@@ -14,14 +15,22 @@ namespace GadgetHub.Web.GHDistributor
         {
             if (!IsPostBack)
             {
+                lblMessage.Visible = false;
+                lblMessage.Text = string.Empty;
                 LoadQuotations();
             }
         }
 
         private int GetLoggedInDistributorId()
         {
-            // TODO: Replace with session or auth context
-            return 1004;  // example fixed distributor id
+            if (Session["UserId"] != null && int.TryParse(Session["UserId"].ToString(), out int distributorId))
+            {
+                return distributorId;
+            }
+
+            // Not logged in; send to login page
+            Response.Redirect("~/Login.aspx", endResponse: true);
+            return -1;
         }
 
         private void LoadQuotations()
@@ -34,32 +43,51 @@ namespace GadgetHub.Web.GHDistributor
 
             if (quotations.Count == 0)
             {
-                phQuotations.Controls.Add(new LiteralControl("<p>No quotations found.</p>"));
+                phQuotations.Controls.Add(new LiteralControl("<div class='empty-state'>No quotations found.</div>"));
                 return;
             }
 
             foreach (var quote in quotations)
             {
-                phQuotations.Controls.Add(new LiteralControl($"<h3>Quotation #{quote.QuotationId} - Status: {quote.Status} - Created At: {quote.CreatedAt?.ToString("yyyy-MM-dd")}</h3>"));
+                var builder = new StringBuilder();
+                builder.Append("<div class='quote-card'><div class='quote-body'>");
 
-                phQuotations.Controls.Add(new LiteralControl("<table>"));
-                phQuotations.Controls.Add(new LiteralControl("<tr><th>Product</th><th>Quantity</th><th>Price</th><th>Total</th><th>Action</th></tr>"));
+                builder.Append("<div class='quote-meta'>");
+                builder.Append($"<span>Quotation # {quote.QuotationId}</span>");
 
-                foreach (var item in quote.Items)
+                string status = string.IsNullOrEmpty(quote.Status) ? "Pending" : quote.Status;
+                builder.Append($"<span>Status: {Server.HtmlEncode(status)}</span>");
+
+                if (quote.CreatedAt.HasValue)
+                {
+                    builder.Append($"<span>Created: {quote.CreatedAt.Value:yyyy-MM-dd}</span>");
+                }
+
+                var items = quote.Items ?? new QuotationItemDTO[0];
+                int itemCount = items.Length;
+                builder.Append($"<span>Items: {itemCount}</span>");
+                builder.Append("</div>");
+
+                builder.Append("<div class='quote-table-scroll'><table><thead><tr><th>Product</th><th>Quantity</th><th>Price</th><th>Total</th><th>Action</th></tr></thead><tbody>");
+
+                foreach (var item in items)
                 {
                     string qtyId = $"qty_{quote.QuotationId}_{item.ProductId}";
                     string priceId = $"price_{quote.QuotationId}_{item.ProductId}";
+                    decimal lineTotal = item.Price * item.Quantity;
 
-                    phQuotations.Controls.Add(new LiteralControl("<tr>"));
-                    phQuotations.Controls.Add(new LiteralControl($"<td>{item.ProductName}</td>"));
-                    phQuotations.Controls.Add(new LiteralControl($"<td><input type='number' id='{qtyId}' value='{item.Quantity}' min='0' /></td>"));
-                    phQuotations.Controls.Add(new LiteralControl($"<td><input type='text' id='{priceId}' value='{item.Price:F2}' /></td>"));
-                    phQuotations.Controls.Add(new LiteralControl($"<td>{(item.Price * item.Quantity):F2}</td>"));
-                    phQuotations.Controls.Add(new LiteralControl($"<td><button type='button' class='btn-update' onclick=\"updateQuotationItem({quote.QuotationId}, {item.ProductId})\">Update</button></td>"));
-                    phQuotations.Controls.Add(new LiteralControl("</tr>"));
+                    builder.Append("<tr>");
+                    builder.Append($"<td>{Server.HtmlEncode(item.ProductName)}</td>");
+                    builder.Append($"<td><input type='number' id='{qtyId}' value='{item.Quantity}' min='0' step='1' /></td>");
+                    builder.Append($"<td><input type='text' id='{priceId}' value='{item.Price:F2}' /></td>");
+                    builder.Append($"<td>{lineTotal:F2}</td>");
+                    builder.Append($"<td><button type='button' class='btn-update' onclick=\"updateQuotationItem({quote.QuotationId}, {item.ProductId})\">Update</button></td>");
+                    builder.Append("</tr>");
                 }
 
-                phQuotations.Controls.Add(new LiteralControl("</table>"));
+                builder.Append("</tbody></table></div></div></div>");
+
+                phQuotations.Controls.Add(new LiteralControl(builder.ToString()));
             }
         }
 
@@ -83,12 +111,26 @@ namespace GadgetHub.Web.GHDistributor
                         decimal.TryParse(args[3], out decimal price))
                     {
                         bool success = service.UpdateQuotationItem(quotationId, productId, qty, price);
-                        lblMessage.Text = success ? "Update successful." : "Update failed.";
                         LoadQuotations();
+
+                        if (success)
+                        {
+                            lblMessage.Text = "Update successful.";
+                            lblMessage.CssClass = "feedback feedback-success";
+                        }
+                        else
+                        {
+                            lblMessage.Text = "Update failed.";
+                            lblMessage.CssClass = "feedback feedback-error";
+                        }
+
+                        lblMessage.Visible = true;
                     }
                     else
                     {
                         lblMessage.Text = "Invalid update parameters.";
+                        lblMessage.CssClass = "feedback feedback-error";
+                        lblMessage.Visible = true;
                     }
                 }
             }

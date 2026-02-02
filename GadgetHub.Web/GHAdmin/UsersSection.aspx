@@ -13,7 +13,8 @@
             color: #e2e8f0;
             min-height: 100vh;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         body::before {
