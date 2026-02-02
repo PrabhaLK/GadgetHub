@@ -1,85 +1,69 @@
 # GadgetHub
 
-GadgetHub is a demonstration application built using a Service-Oriented Architecture (SOA) with Windows Communication Foundation (WCF). It showcases a basic user registration system for a fictional e-commerce platform, clearly separating the business logic, hosting, and presentation layers.
+Service-oriented e-commerce demo built with WCF and ASP.NET Web Forms. It separates service, host, and web UI into distinct projects and includes admin, distributor, and customer-facing areas with recent UI refreshes.
 
-## Architecture
+## Solution layout
 
-The solution is divided into three distinct projects:
+- GadgetHub.Service — WCF service library with business logic, data access, DTOs, and service contracts.
+- GadgetHub.Host — Console host exposing the WCF service at http://localhost:8733/GadgetHubService/.
+- GadgetHub.Web — ASP.NET Web Forms client (admin, distributor, customer flows; login/register; dashboards).
+- Queries — Handy SQL seed scripts (quotations, contact messages, etc.).
 
-*   **`GadgetHub.Service` (WCF Service Library)**: This is the core component containing the business logic. It defines the service contract (`IGadgetHubService`) and its implementation, which includes the `RegisterUser` method. This layer is responsible for interacting with the database.
-*   **`GadgetHub.Host` (Console Application)**: A lightweight, self-hosting console application for the WCF service. It makes the `GadgetHubService` available over HTTP for clients to consume.
-*   **`GadgetHub.Web` (ASP.NET Web Forms)**: The front-end web application that serves as the client. It includes a registration page (`Register.aspx`) that consumes the WCF service to register new users.
+## Key features
 
-## Features
-
-*   User registration with fields for name, phone number, username, password, and email.
-*   Multi-project SOA implementation using WCF.
-*   Self-hosted WCF service via a console application.
-*   ASP.NET Web Forms client consuming the WCF service.
+- Auth with roles (Admin, Distributor, Customer) and BCrypt password storage.
+- Admin: users, products, orders, quotations, contact messages — all restyled with the new glass UI.
+- Distributor: dashboard, quotations (editable line items), orders, contact messages — same design system.
+- Customer: login/register and basic purchasing flows (cart/orders).
+- SQL Server persistence (LocalDB by default) with seed data for quicker demos.
 
 ## Prerequisites
 
-*   Visual Studio 2017 or later
-*   .NET Framework 4.7.2
-*   SQL Server (including LocalDB)
+- Visual Studio 2019+ (or 2017 if you prefer) with .NET Framework 4.7.2 SDK.
+- SQL Server / LocalDB accessible as (localdb)\MSSQLLocalDB (default in code).
 
-## Getting Started
+## Configure database
 
-Follow these instructions to get the project up and running on your local machine.
+1) Ensure a database named `GadgetHubDB` exists on your SQL instance.
+2) Connection string is in GadgetHub.Service/GadgetHubService.cs — update if you are not using LocalDB:
 
-### 1. Database Setup
+```csharp
+private readonly string connectionString =
+    @"Server=(localdb)\MSSQLLocalDB;
+      Database=GadgetHubDB;
+      Trusted_Connection=True;";
+```
 
-The application requires a SQL Server database. The connection string in the project is hardcoded to use a local `.mdf` file.
+3) Apply schema: use final-schema.sql (top-level) to create tables and minimal seed products/categories.
+   Example:
 
-1.  **Create the Database**: In Visual Studio's "Server Explorer" or using SQL Server Management Studio, create a new database. You can name it `GadgetHubDB`.
+```sh
+sqlcmd -S "(localdb)\MSSQLLocalDB" -d GadgetHubDB -i "final-schema.sql"
+```
 
-2.  **Create the Users Table**: Execute the following SQL script against your newly created database to create the `Users` table.
+4) Optional demo data:
+   - Seed quotations: Queries/seed_distributor_quotations.sql
+   - Seed contact messages: Queries/seed_contact_messages.sql
 
-    ```sql
-    CREATE TABLE [dbo].[Users]
-    (
-        [Id]          INT           IDENTITY (1, 1) NOT NULL,
-        [FirstName]   NVARCHAR (50) NOT NULL,
-        [LastName]    NVARCHAR (50) NOT NULL,
-        [PhoneNumber] NVARCHAR (20) NOT NULL,
-        [Username]    NVARCHAR (50) NOT NULL UNIQUE,
-        [Password]    NVARCHAR (50) NOT NULL,
-        [Email]       NVARCHAR (100) NOT NULL,
-        [Role]        NVARCHAR (20) NOT NULL,
-        PRIMARY KEY CLUSTERED ([Id] ASC)
-    );
-    ```
+## Running the app
 
-3.  **Update Connection String**: Open the `GadgetHub.Service/GadgetHubService.cs` file and update the `connectionString` variable to point to your database. For example, if using LocalDB, your string might look like this:
+1) Start the service host: set GadgetHub.Host as startup and run (Debug ▶ Start New Instance). Keep it running.
+2) Start the web client: set GadgetHub.Web as startup and run (F5). Default landing is Login.aspx.
+3) Log in:
+   - Admin (example): use your created admin account.
+   - Distributor: dist1 / corresponding password (check Users table for email dist@test.com if needed).
+   - Customers: create via Register.aspx or seed your own.
 
-    ```csharp
-    // Before
-    string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\SOC\\GadgetHub\\GadgetHubDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=False";
-    
-    // After (Update with your correct path and server instance)
-    string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Your\\Path\\To\\GadgetHubDB.mdf;Integrated Security=True;Connect Timeout=30";
-    ```
+## Useful paths
 
-### 2. Build the Solution
+- Service endpoint config: GadgetHub.Host/App.config
+- Web client endpoint: GadgetHub.Web/Web.config (points to http://localhost:8733/GadgetHubService/)
+- Core service code/connection string: GadgetHub.Service/GadgetHubService.cs
+- Admin UI pages: GadgetHub.Web/GHAdmin
+- Distributor UI pages: GadgetHub.Web/GHDistributor
+- Seeds: Queries/seed_distributor_quotations.sql, Queries/seed_contact_messages.sql
 
-1.  Clone the repository to your local machine:
-    ```sh
-    git clone https://github.com/sadanah/gadget-hub-soc.git
-    ```
-2.  Open the `GadgetHub.sln` file in Visual Studio.
-3.  Build the solution by selecting `Build` > `Build Solution` from the menu. This will restore the necessary NuGet packages.
+## Notes
 
-### 3. Run the Application
-
-The service must be running before the web client can connect to it.
-
-1.  **Start the WCF Service Host**: In the Solution Explorer, right-click the **`GadgetHub.Host`** project and select `Debug` -> `Start New Instance`. A console window will appear with the message: `Service is running at http://localhost:8733/GadgetHubService/`. Do not close this window.
-
-2.  **Start the Web Client**:
-    *   Right-click the **`GadgetHub.Web`** project in the Solution Explorer and select `Set as StartUp Project`.
-    *   Press `F5` or click the `Start` button in Visual Studio to launch the web application.
-
-3.  **Test Registration**:
-    *   Your web browser should open. Navigate to the registration page by adding `/Register.aspx` to the URL (e.g., `https://localhost:44391/Register.aspx`).
-    *   Fill in the registration form and click the "Register" button.
-    *   A status message will appear indicating whether the registration was successful.
+- If you change the service URL or binding, update the Web.config endpoint accordingly.
+- After code-behind changes, rebuild and restart the web site to pick up the updates (session-dependent pages rely on fresh logins).
